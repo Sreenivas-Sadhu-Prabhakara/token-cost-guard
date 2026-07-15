@@ -1,0 +1,24 @@
+---
+// GA4 — loads only when a real Measurement ID is set (not the placeholder)
+import { site } from '../site.config.mjs';
+const enabled = site.ga4Id && !site.ga4Id.includes('XXXX');
+---
+{
+  enabled && (
+    <>
+      <script
+        is:inline
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${site.ga4Id}`}
+      />
+      <script is:inline define:vars={{ id: site.ga4Id }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', id, { anonymize_ip: true });
+      </script>
+    </>
+  )
+}

@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../site.config.mjs';
+
+// ── Content the subagent fills in per product ──────────────────
+const features = [
+  {
+    title: 'Per-feature cost breakdown',
+    body: 'See exactly which product feature, endpoint, and prompt is burning your LLM budget — so you can fix the top spenders first, not guess.',
+  },
+  {
+    title: 'Automatic response caching',
+    body: 'Repeat and near-identical calls are served from cache instead of hitting the API again, cutting token spend on the requests you pay for twice.',
+  },
+  {
+    title: 'Budget alerts & overrun protection',
+    body: 'Set spend limits per team, feature, or model and get alerted the moment usage trends past budget — before the invoice surprises you.',
+  },
+  {
+    title: 'Model-downgrade suggestions',
+    body: 'We flag calls where a cheaper model would return the same quality answer, so you drop cost without hurting the user experience.',
+  },
+  {
+    title: 'Team spend dashboards',
+    body: 'Give engineering and finance one shared token usage dashboard: real-time LLM spend by team, feature, provider, and model.',
+  },
+  {
+    title: 'Drop-in — no product code changes',
+    body: 'Point your traffic through Token Cost Guard and start tracking and saving. No SDK rewrites, no touching your product code.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'What is ' + site.name + '?',
+    a: 'Token Cost Guard is an LLM cost optimization tool that tracks your AI token spend per feature, caches repeat calls, alerts on budget overruns, and flags where a cheaper model would do the same job — typically cutting LLM bills 30–60%.',
+  },
+  {
+    q: 'How does it reduce costs without hurting quality?',
+    a: 'It saves money in ways that do not touch output quality: serving repeat calls from cache, catching runaway or duplicated requests, and only suggesting a cheaper model where the response quality would be equivalent. You stay in control of every change.',
+  },
+  {
+    q: 'Which providers does it work with?',
+    a: 'Token Cost Guard works with Claude (Anthropic), OpenAI, and other major LLM providers, giving you unified spend monitoring and a single token usage dashboard across all of them.',
+  },
+  {
+    q: 'Is there a free tier?',
+    a: 'Yes. You can start tracking your LLM spend for free, no credit card required, and see your potential savings before you upgrade.',
+  },
+];
+
+// FAQ structured data for rich results
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout>
+  <script
+    slot="header"
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(faqJsonLd)}
+  />
+  <Header slot="header" />
+
+  <!-- Hero -->
+  <section class="mx-auto max-w-4xl px-6 pb-16 pt-20 text-center">
+    <p class="mb-4 inline-block rounded-full bg-brand-50 px-4 py-1 text-sm font-semibold text-brand-700">
+      {site.organization}
+    </p>
+    <h1 class="text-balance text-5xl font-extrabold tracking-tight sm:text-6xl">
+      {site.tagline}
+    </h1>
+    <p class="mx-auto mt-6 max-w-2xl text-lg text-[var(--muted)]">
+      {site.description}
+    </p>
+    <div class="mt-10 flex justify-center gap-4">
+      <a
+        href="#cta"
+        class="rounded-xl bg-brand-600 px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
+        >See your savings</a
+      >
+      <a
+        href="#features"
+        class="rounded-xl border border-[var(--border)] px-7 py-3.5 text-base font-semibold transition hover:bg-[var(--card)]"
+        >See how it works</a
+      >
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="mx-auto max-w-6xl px-6 py-16">
+    <h2 class="text-center text-3xl font-bold tracking-tight">Track, cut, and monitor your LLM costs</h2>
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        features.map((f) => (
+          <div class="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+            <h3 class="text-lg font-semibold">{f.title}</h3>
+            <p class="mt-2 text-[var(--muted)]">{f.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="mx-auto max-w-3xl px-6 py-16">
+    <h2 class="text-center text-3xl font-bold tracking-tight">Frequently asked questions</h2>
+    <div class="mt-10 divide-y divide-[var(--border)]">
+      {
+        faqs.map((f) => (
+          <details class="group py-5">
+            <summary class="cursor-pointer list-none text-lg font-semibold">
+              {f.q}
+            </summary>
+            <p class="mt-3 text-[var(--muted)]">{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- CTA / waitlist -->
+  <section id="cta" class="mx-auto max-w-3xl px-6 py-20 text-center">
+    <div class="rounded-3xl border border-[var(--border)] bg-brand-600 px-8 py-14 text-white">
+      <h2 class="text-3xl font-bold">See your savings with {site.name}</h2>
+      <p class="mx-auto mt-3 max-w-md text-brand-100">
+        Drop it in, watch your LLM spend, and find 30–60% to cut. Free to start — no credit card.
+      </p>
+      <!-- Replace action with a real backend/waitlist endpoint per product -->
+      <form
+        class="mx-auto mt-8 flex max-w-md gap-3"
+        action="#"
+        method="post"
+        data-waitlist
+      >
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="you@work.com"
+          class="w-full rounded-lg px-4 py-3 text-[var(--fg)]"
+        />
+        <button
+          type="submit"
+          class="whitespace-nowrap rounded-lg bg-white px-6 py-3 font-semibold text-brand-700 transition hover:bg-brand-50"
+          >See your savings</button
+        >
+      </form>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
